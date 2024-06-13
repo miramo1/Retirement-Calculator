@@ -286,7 +286,7 @@ class investment(tk.Frame):
 
             self.overview.insert(tk.END, f'\n     {round((self.total_inflation-1)*100)}% Inflation from [{self.year_start}] to [{self.year_end}]\n')
 
-            self.overview.insert(tk.END, f'\n  Total Invested: {self.starting_balance+(self.yearly_contribution*self.total_years):,} @ {round((self.interest-1)*100)}% interest \n')
+            self.overview.insert(tk.END, f'\n  Total Invested: {self.starting_balance+(self.yearly_contribution*self.total_years):,} @ {round((self.interest-1)*100,2)}% interest \n')
 
         def insert_specific_year_text(self):
             """Inserts the specific year text."""
