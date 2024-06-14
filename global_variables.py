@@ -46,6 +46,7 @@ COLORS = {'NEGATIVE_BAL_COLOR' : "#d41243",
         'ALT_HIGHLIGHT' : "#F0F3FF",
         'INFLATION_GRAPH_COLOR' : '#483D8B',
         'TEXT_COLOR' : '#1C1A38',
+        # 'TEXT_COLOR' : '#252249',
         'BACKGROUND_COLOR' : "white smoke"
 }
 
