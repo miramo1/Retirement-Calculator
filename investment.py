@@ -2,7 +2,7 @@ import tkinter as tk
 import random
 from matplotlib import pyplot as plt
 from datetime import datetime
-import pyperclip
+
 from global_variables import FONTS, DEFAULT_PARAMS, COLORS, GRAPH_WIDTH, GRAPH_HEIGHT, SCREEN_HORIZONTAL_RES, random_list
 
 class investment(tk.Frame):
@@ -63,8 +63,8 @@ class investment(tk.Frame):
     def r_to_reset(self, event=None):
         self.reset()
 
-    # def tab_to_switch(self, event=None):
-    #     self.master.show_frame('retirement')
+    def tab_to_switch(self, event=None):
+        self.master.show_frame('retirement')
 
     def create_title(self):
 
@@ -73,6 +73,9 @@ class investment(tk.Frame):
 
         switch_button = tk.Button(self, text="Retirement", font=self.HEAVY_BOLD_FONT, command=lambda: [self.controller.show_frame('retirement'), plt.close(), self.controller.title(f'Retirement Calculator')])
         switch_button.grid(row=0, column=2, columnspan=1, sticky="ns", padx=(0,0), pady=(5, 2))
+
+        switch_button.bind("<Enter>", self.controller.on_hover)
+        switch_button.bind("<Leave>", self.controller.on_leave)
 
     def create_labels_and_entries(self):
 
@@ -309,9 +312,10 @@ class investment(tk.Frame):
             px = 1/plt.rcParams['figure.dpi']
             '''ensure graph and app have same height. had to do this manually, as there was no way to get the height of matplotlib tool bar'''
             fig, ax = plt.subplots(figsize=(GRAPH_WIDTH*px, GRAPH_HEIGHT*px))
+            ax.tick_params(labelcolor = COLORS['TEXT_COLOR'], labelsize=FONTS['DEFAULT_FONT'][1])
+            plt.rcParams['text.color'] = COLORS['TEXT_COLOR']
 
             plt.suptitle(f'Investment Growth', fontsize=FONTS['TITLE_FONT'][1], fontweight='bold')
-            plt.title(f'{year_end-year_start} Years', fontsize=FONTS['DEFAULT_FONT'][1])
 
             def align_graph_with_app(self):
         
@@ -458,7 +462,7 @@ class investment(tk.Frame):
             #text box for information
             props = dict(boxstyle='round', facecolor='white', alpha=0.8, edgecolor='black')
 
-            textstr = f'Initial: {self.starting_balance:,}\nYearly: {self.yearly_contribution:,}\nInflation: {self.inflation_entry.get()}%\nInterest: {self.interest_entry.get()}%'
+            textstr = f'Initial: {self.starting_balance:,}\nYearly: {self.yearly_contribution:,}\nInflation: {self.inflation_entry.get()}%\nInterest: {self.interest_entry.get()}%\nTime: {year_end-year_start} Yrs'
 
             ax.text(.02, .975, textstr, transform=ax.transAxes, fontsize=FONTS['DEFAULT_FONT'][1], verticalalignment='top', horizontalalignment='left', bbox=props)
 
@@ -528,6 +532,9 @@ class investment(tk.Frame):
         sub_btn.config(font=self.HEAVY_BOLD_FONT)
         sub_btn.grid(row=8, column=1, padx=(10,1), pady=(10,1), sticky='w')
 
+        sub_btn.bind("<Enter>", self.controller.on_hover)
+        sub_btn.bind("<Leave>", self.controller.on_leave)
+
     def reset(self):
         '''resets all entries to the default values'''
         self.overview.config(state='normal')
@@ -563,6 +570,9 @@ class investment(tk.Frame):
         reset_btn = tk.Button(self, text=' Reset ', command=self.reset)
         reset_btn.config(font=self.HEAVY_BOLD_FONT)
         reset_btn.grid(row=8, column=1, padx=(1, 10), pady=(10, 1), sticky='e')
+
+        reset_btn.bind("<Enter>", self.controller.on_hover)
+        reset_btn.bind("<Leave>", self.controller.on_leave)
 
     def create_overview_box(self):
         '''gives the overview of what the calculation shows total years, initial and final withdrawal, remaining balance, total lifetime withdrawal, and if the account goes negative, the year it goes negative and how many years short it is. see submit method'''
