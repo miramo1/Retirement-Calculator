@@ -58,18 +58,14 @@ class retirement(tk.Frame):
         self.bind("r", lambda event: self.r_to_reset())
         self.bind("<Tab>", lambda event: self.tab_to_switch())
         
-        # self.color_test = controller.test
-
     def enter_to_submit(self, event=None):
         self.submit()
 
     def r_to_reset(self, event=None):
         self.reset()
 
-    # def tab_to_switch(self, event=None):
-    #     self.master.show_frame('investment')
-
-    '''start of app'''
+    def tab_to_switch(self, event=None):
+        self.master.show_frame('investment')
 
     def create_title(self):
 
@@ -80,6 +76,9 @@ class retirement(tk.Frame):
         '''switch button to swap apps, also closes plot if open'''
         switch_button = tk.Button(self, text="Investment", font=self.HEAVY_BOLD_FONT, command=lambda: [self.controller.show_frame('investment'), plt.close(), self.controller.title('Investment Calculator')])
         switch_button.grid(row=0, column=2, columnspan=1, sticky="ns", padx=(0,0), pady=(5, 2))
+        
+        switch_button.bind("<Enter>", self.controller.on_hover)
+        switch_button.bind("<Leave>", self.controller.on_leave)
 
     def create_labels_and_entries(self):
         '''used a trace to format the starting balance entry with commas. also used a try except to make sure the entry is a valid integer. if not, it ignores the error and does nothing. this is to prevent the user from entering a non integer value. the same is done for the other entries. see submit method for error checking.'''
@@ -295,7 +294,7 @@ class retirement(tk.Frame):
 
             self.overview.insert(tk.END, f'\n     Equal to {round(self.withdrawals[0]/self.total_inflation):,} in [{datetime.now().year}]\n')
 
-            self.overview.insert(tk.END, f'\n     {round(self.withdrawals[0]/self.total_inflation/12):,} Monthly\n\n')
+            self.overview.insert(tk.END, f'\n          {round(self.withdrawals[0]/self.total_inflation/12):,} Monthly\n\n')
 
 
             '''eg. Total Lifetime Withdrawals: 1,380,009'''
@@ -575,6 +574,9 @@ class retirement(tk.Frame):
         sub_btn = tk.Button(self, text=' Submit ', command=self.submit)
         sub_btn.config(font=self.HEAVY_BOLD_FONT)
         sub_btn.grid(row=8, column=1, padx=(10,1), pady=(10,1), sticky='w')
+
+        sub_btn.bind("<Enter>", self.controller.on_hover)
+        sub_btn.bind("<Leave>", self.controller.on_leave)
     
     '''resets all entries to the default values'''
     def reset(self):
@@ -612,6 +614,9 @@ class retirement(tk.Frame):
         reset_btn = tk.Button(self, text=' Reset ', command=self.reset)
         reset_btn.config(font=self.HEAVY_BOLD_FONT)
         reset_btn.grid(row=8, column=1, padx=(1, 10), pady=(10, 1), sticky='e')
+        
+        reset_btn.bind("<Enter>", self.controller.on_hover)
+        reset_btn.bind("<Leave>", self.controller.on_leave)
 
     def create_overview_box(self):
         '''gives the overview of what the calculation shows total years, initial and final withdrawal, remaining balance, total lifetime withdrawal, and if the account goes negative, the year it goes negative and how many years short it is. see submit method'''
