@@ -390,6 +390,7 @@ class retirement(tk.Frame):
 
             '''only show every other year on x axis for readability'''
             def format_x_axis(self):
+
                 ax.set_xticks([year for year in range(self.year_start, self.year_end)], minor=False)
                 ax.tick_params(axis='x', rotation=45)
                 ax.xaxis.grid(True, which='minor')
@@ -454,7 +455,7 @@ class retirement(tk.Frame):
             '''format y axis labels with commas if portfolio max under one million, prevents scientific notation'''
 
             def format_y_axis(self):
-
+                
                 '''if graph has negative values, extend y axis by extra 5 percent of both min/max balance'''
                 if self.remaining_balance[-1] < 0:
                     ax.set_ylim(ymin=min(self.remaining_balance)*1.05)
@@ -494,48 +495,64 @@ class retirement(tk.Frame):
             plt.plot(self.year_start, self.remaining_balance[0], c=self.POSITIVE_BAL_COLOR, marker='.', markersize=FONTS['DEFAULT_FONT'][1])
 
             '''text box for information- withdrawal, inflation, interest, max value, final value'''
-            props = dict(boxstyle='round', facecolor='white', alpha=0.8, edgecolor='black')
+            props = dict(boxstyle='round', facecolor='white', alpha=1, edgecolor='black')
 
             '''marker and textbox for highest balance'''
             plt.plot(portfolio_max_year, portfolio_max_value, c=self.POSITIVE_BAL_COLOR, marker='.', markersize=FONTS['DEFAULT_FONT'][1])
             
-            '''offset y coordinate for portfolio max, and final balance labels. '''
-            max_label_vertical_offset = self.winfo_height()/55
-            final_label_vertical_offset = -self.winfo_height()/35
+            '''offset y coordinate for portfolio max, and final balance labels.'''
+            max_label_vertical_offset = self.winfo_height()/50
+            final_label_vertical_offset = -self.winfo_height()/30
 
             '''portfolio max value and year annotation. always shown.'''
-            ax.annotate(f'Max: {portfolio_max_value:,} in {portfolio_max_year}', (portfolio_max_year, portfolio_max_value), textcoords="offset points", xytext=(-20,max_label_vertical_offset), ha='center', fontsize=FONTS['DEFAULT_FONT'][1], bbox=props) 
+            ax.annotate(f'Max: {portfolio_max_value:,}', (portfolio_max_year, portfolio_max_value), textcoords="offset points", xytext=(-20,max_label_vertical_offset), ha='center', fontsize=FONTS['DEFAULT_FONT'][1], bbox=props) 
 
-            '''final balance annotation. always shown. if negative, red marker will override in subsequent code.'''
+            '''final balance marker. always shown. if negative, red marker will override in subsequent code.'''
             plt.plot(self.years[-1], self.remaining_balance[-1], c=self.POSITIVE_BAL_COLOR, marker='.', markersize=FONTS['DEFAULT_FONT'][1])
 
-            textstr = f'{self.remaining_balance[0]+self.withdrawals[0]:,} Initial Balance\nWithdrawal: {self.starting_withdrawal_entry.get()}%\nInflation: {self.inflation_entry.get()}%\nInterest: {self.interest_entry.get()}%'
+            def info_box_top_left(self):
+                    textstr = f'{self.remaining_balance[0]+self.withdrawals[0]:,} Initial Balance\nWithdrawal: {self.starting_withdrawal_entry.get()}%\nInflation: {self.inflation_entry.get()}%\nInterest: {self.interest_entry.get()}%'
 
-            ax.text(.02, .7, textstr, transform=ax.transAxes, fontsize=FONTS['DEFAULT_FONT'][1], verticalalignment='top', horizontalalignment='left', bbox=props)
+                    ax.text(.02, .975, textstr, transform=ax.transAxes, fontsize=FONTS['DEFAULT_FONT'][1], verticalalignment='top', horizontalalignment='left', bbox=props)
+
+            def info_box_bottom_left(self):
+                    textstr = f'{self.remaining_balance[0]+self.withdrawals[0]:,} Initial Balance\nWithdrawal: {self.starting_withdrawal_entry.get()}%\nInflation: {self.inflation_entry.get()}%\nInterest: {self.interest_entry.get()}%'
+
+                    ax.text(.02, .185, textstr, transform=ax.transAxes, fontsize=FONTS['DEFAULT_FONT'][1], verticalalignment='top', horizontalalignment='left', bbox=props)
+
+            def final_balance_marker_red_dot(self):
+                plt.plot(self.years[-1], self.remaining_balance[-1], c=self.NEGATIVE_BAL_COLOR, marker='.', markersize=FONTS['DEFAULT_FONT'][1])
+
+            def final_balance_annotation_red_text(self):
+                ax.annotate(f'Final: {self.remaining_balance[-1]:,}', (self.years[-1],self.remaining_balance[-1]), textcoords="offset points", xytext=(-20,max_label_vertical_offset), ha='center', fontsize=FONTS['DEFAULT_FONT'][1], bbox=props, c=self.NEGATIVE_BAL_COLOR) 
+
+            def final_balance_annotation_green_text(self):
+                ax.annotate(f'Final: {self.remaining_balance[-1]:,}', (self.years[-1],self.remaining_balance[-1]), textcoords="offset points", xytext=(-20,final_label_vertical_offset), ha='center', fontsize=FONTS['DEFAULT_FONT'][1], bbox=props) 
 
             '''if final balance and portfolio max is same, only plot marker for max'''
             if portfolio_max_value == self.remaining_balance[-1]:
-                pass
-            elif portfolio_max_value * .9 < self.remaining_balance[-1]:
-                '''if final balance and portfolio max very close, shift final balance annotion down to avoid clipping with portfolio max annotation'''
-                if self.remaining_balance[-1] < 0:
-                    '''if final balance is negative, add red marker to it and red text to the annotation'''
 
-                    plt.plot(self.years[-1], self.remaining_balance[-1], c=self.NEGATIVE_BAL_COLOR, marker='.', markersize=FONTS['DEFAULT_FONT'][1])
+                info_box_top_left(self)
 
-                    ax.annotate(f'Final: {self.remaining_balance[-1]:,} in {self.years[-1]}', (self.years[-1],self.remaining_balance[-1]), textcoords="offset points", xytext=(-20,final_label_vertical_offset), ha='center', fontsize=FONTS['DEFAULT_FONT'][1], bbox=props, c=self.NEGATIVE_BAL_COLOR) 
-                else:
-                    '''else, green markerm, regular text'''
-                    plt.plot(self.years[-1], self.remaining_balance[-1], c=self.POSITIVE_BAL_COLOR, marker='.', markersize=FONTS['DEFAULT_FONT'][1])
-
-                    ax.annotate(f'Final: {self.remaining_balance[-1]:,} in {self.years[-1]}', (self.years[-1],self.remaining_balance[-1]), textcoords="offset points", xytext=(-20,final_label_vertical_offset), ha='center', fontsize=FONTS['DEFAULT_FONT'][1], bbox=props) 
             elif self.remaining_balance[-1] < 0:
                 '''if final balance is negative, add a red marker and red annotized text, else green'''
-                plt.plot(self.years[-1], self.remaining_balance[-1], c=self.NEGATIVE_BAL_COLOR, marker='.', markersize=FONTS['DEFAULT_FONT'][1])
-                ax.annotate(f'Final: {self.remaining_balance[-1]:,} in {self.years[-1]}', (self.years[-1],self.remaining_balance[-1]), textcoords="offset points", xytext=(-20,max_label_vertical_offset), ha='center', fontsize=FONTS['DEFAULT_FONT'][1], bbox=props, c=self.NEGATIVE_BAL_COLOR) 
+
+                final_balance_marker_red_dot(self)
+                final_balance_annotation_red_text(self)
+                info_box_bottom_left(self)
+
+            elif portfolio_max_value * .9 < self.remaining_balance[-1]:
+                '''if final balance and portfolio max very close, shift final balance annotion down to avoid clipping with portfolio max annotation'''
+
+                final_balance_annotation_green_text(self)
+
+                info_box_top_left(self)
+
             else:
-                plt.plot(self.years[-1], self.remaining_balance[-1], c=self.POSITIVE_BAL_COLOR, marker='.', markersize=FONTS['DEFAULT_FONT'][1])
+
                 ax.annotate(f'Final: {self.remaining_balance[-1]:,} in {self.years[-1]}', (self.years[-1],self.remaining_balance[-1]), textcoords="offset points", xytext=(-20,max_label_vertical_offset), ha='center', fontsize=FONTS['DEFAULT_FONT'][1], bbox=props) 
+
+                info_box_bottom_left(self)    
 
 
             ax.grid(True)
@@ -543,7 +560,7 @@ class retirement(tk.Frame):
             '''# disable scientific notation for x,y in bottom left'''
 
             ax.format_coord = lambda x,y: f"$ {int(round(y,-3)):,}\n{round(x)}" 
-            
+            plt.tight_layout()
             plt.show()
 
         '''submit button function called'''
