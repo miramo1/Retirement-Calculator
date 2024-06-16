@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter.tix import *
 import random
 from matplotlib import pyplot as plt
 from datetime import datetime
@@ -105,6 +106,9 @@ class investment(tk.Frame):
         self.initial_contribution_entry = tk.Entry(self, textvariable=starting_balance_var, font=self.DEFAULT_FONT)            
         self.initial_contribution_entry.insert(0, "{:,}".format(self.INITIAL_CONTRIBUTION))            
         self.initial_contribution_entry.grid(row=2, column=1, sticky='ew', padx=(20, 10), pady=(1, 1))
+
+        tip = Balloon(self)
+        tip.bind_widget(self.initial_contribution_label, balloonmsg="www.tutorialspoint.com")
 
         self.yearly_contribution_label = tk.Label(self, text=' Yearly Cashflow:', font=self.DEFAULT_FONT)
         self.yearly_contribution_label.grid(row=3, sticky='w', padx=(1, 1), pady=(1, 1))
@@ -460,9 +464,9 @@ class investment(tk.Frame):
             format_y_axis(self)
 
             #text box for information
-            props = dict(boxstyle='round', facecolor='white', alpha=0.8, edgecolor='black')
+            props = dict(boxstyle='round', facecolor='white', alpha=1, edgecolor='black')
 
-            textstr = f'Initial: {self.starting_balance:,}\nYearly: {self.yearly_contribution:,}\nInflation: {self.inflation_entry.get()}%\nInterest: {self.interest_entry.get()}%\nTime: {year_end-year_start} Yrs'
+            textstr = f'Initial: {self.starting_balance:,}\nYearly: {self.yearly_contribution:,}\nInflation: {self.inflation_entry.get()}%\nInterest: {self.interest_entry.get()}%\nWindow: {year_end-year_start} Yrs'
 
             ax.text(.02, .975, textstr, transform=ax.transAxes, fontsize=FONTS['DEFAULT_FONT'][1], verticalalignment='top', horizontalalignment='left', bbox=props)
 
@@ -487,6 +491,7 @@ class investment(tk.Frame):
 
             # plt.tight_layout()
             ax.set_axisbelow(True) 
+            plt.tight_layout()
             plt.show()
 
         clear_variables_close_plot(self)
