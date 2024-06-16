@@ -6,6 +6,6 @@
 
 3. Tab to switch between Investment and Retirement, Enter to submit, R to reset parameters.
 
-4. Withdrawals happen on day 1 of the year, compounding happens on day 365. The starting year is including in the withdrawal calculations.
+4. Withdrawals happen on day 1 of the year, compounding happens on day 365. The starting year is included in the withdrawal calculations.
 
 5. Run main.py to start. Enjoy!
