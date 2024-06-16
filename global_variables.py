@@ -1,5 +1,4 @@
 import ctypes
-import random
 
 '''check resolution to resize app and graph'''
 '''return FONTS, GRAPH_WIDTH, GRAPH_HEIGHT, SCREEN_HORIZONTAL_RES'''
@@ -45,8 +44,7 @@ COLORS = {'NEGATIVE_BAL_COLOR' : "#d41243",
         'POSITIVE_BAL_COLOR' : "#0b6b38",
         'ALT_HIGHLIGHT' : "#F0F3FF",
         'INFLATION_GRAPH_COLOR' : '#483D8B',
-        'TEXT_COLOR' : '#1C1A38',
-        # 'TEXT_COLOR' : '#252249',
+        'TEXT_COLOR' : '#252249',
         'BACKGROUND_COLOR' : "white smoke"
 }
 
